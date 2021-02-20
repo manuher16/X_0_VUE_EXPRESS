@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyparser = require('body-parser');
 const mongoose = require('mongoose');
-const database = require('./database/database');
+const uri = require('./database/database');
 const app = express();
 
 // capturar body
