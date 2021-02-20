@@ -12,7 +12,7 @@ app.use(bodyparser.json());
 mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("DataBase Conected"))
-  .catch((e) => console.log("Error dataBase:", e));
+  .catch((e) => console.log("error db:", e));
 
 // iniciar server
 const PORT = process.env.PORT || 3030;
