@@ -78,6 +78,7 @@ router.post('/login',async (req, res) => {
 
     const validPassword = await bcrypt.compare(req.body.password, user.password);
     if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
+    
     //Cambiamos el status del usuario
     await User.findOneAndUpdate({username:req.body.username},{status:"Online"})
      
