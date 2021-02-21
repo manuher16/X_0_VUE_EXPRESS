@@ -13,6 +13,8 @@ router.get('/games', (req, res) => {
     return
 });
 
+
+
 router.get('/game/:id', (req, res) => {
     return
 });
@@ -59,7 +61,7 @@ router.post('/create/game', async (req, res) => {
         player2: req.body.player2,
         rounds:req.body.rounds
     })
-    
+
     try {
         const saveGame = await game.save()
         res.json({

@@ -18,6 +18,14 @@ const gameSchema = mongoose.Schema({
     p2:{
         type:Array,
         required:true
+    },
+    board:{
+        type:Array,
+        
+    },
+    rounds:{
+        type:Number,
+        
     }
 })
 

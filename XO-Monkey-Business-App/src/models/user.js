@@ -14,10 +14,10 @@ const userSchema = mongoose.Schema({
         required: true,
         minlength: 6
     },
-    games:{
-        type:Array,
-        ref:"games"
-    },
+    games:[{
+        type:mongoose.Types.ObjectId,
+        ref:"game"
+    }],
     status:{
         type:String,
         default:"Offline"
