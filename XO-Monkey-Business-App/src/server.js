@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const uri = require('./database/database');
 const morgan = require("morgan");
 const app = express();
-
+const verifyToken = require('./routes/token')
 // capturar body
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
@@ -17,8 +17,8 @@ mongoose
   .catch((e) => console.log("error db:", e));
 
 //importar rutas
-app.use(require('./routes/user.routes'));
-app.use(require('./routes/game.routes'));
+app.use('/api/user',require('./routes/user.routes'));
+app.use('/api/game', verifyToken, require('./routes/game.routes'));
 
 // iniciar server
 const PORT = process.env.PORT || 3030;
