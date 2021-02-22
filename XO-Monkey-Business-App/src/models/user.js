@@ -21,6 +21,9 @@ const userSchema = mongoose.Schema({
     status:{
         type:String,
         default:"Offline"
+    },
+    invitations:{
+        type:Array
     }
 })
 

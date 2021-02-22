@@ -68,6 +68,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/singup', async(req, res) => {
     const {username}=req.body;
+    
     const user=await User.findOne({username:username})
     if(user){
         if(user.status == "OffLine" || user.status=="Ingame"){
@@ -77,7 +78,7 @@ router.post('/singup', async(req, res) => {
         }
     }
     await User.findOneAndUpdate({username:username},{status:"Offline"})
-    res.json({message:`${username} a terminado sesion`})
+   
 return 	
 });
 
@@ -109,8 +110,9 @@ router.post('/login',async (req, res) => {
     
 });
 
-router.get('/historial',async (req, res) => {
-    const {games} =await  User.findOne({username:req.body.username})
+router.get('/historial/:username',async (req, res) => {
+    console.log(req.params, "llega")
+    const {games} =await  User.findOne({username:req.params.username})
     var historial=[]
     for (let index = 0; index < games.length; index++) {
         historial.push(await Game.findOne({_id:games[index]}))
@@ -119,6 +121,7 @@ router.get('/historial',async (req, res) => {
 });
 
 router.get('/online/users', async(req, res) => {
+    
     const usersOnline= await User.aggregate([
         {
           '$search': {
@@ -137,5 +140,70 @@ router.get('/online/users', async(req, res) => {
         }
       ])
       res.json({usersOnline})
+});
+
+router.get('/invitations/:username',async (req, res) => {
+    const invitations=await User.aggregate([
+        {
+          '$search': {
+            'text': {
+              'query': req.params.username, 
+              'path': 'username'
+            }
+          }
+        }, {
+          '$project': {
+            'invitations': 1,
+            'status':1
+          }
+        }
+      ])
+      var temp=[]
+     
+        var usertemp={}
+        for (let index = 0; index < invitations[0].invitations.length; index++) {
+            usertemp=await User.findOne({username:invitations[0].invitations[index]})  
+            if(usertemp.status=="Online"){
+                temp.push(usertemp.username)
+            }
+        }
+        await User.findOneAndUpdate({username:req.params.username},{invitations:temp})
+      res.json({
+          data:temp
+      })
+return 	
+});
+router.post('/challenge/:username',async (req, res) => {
+    
+    var user =await User.findOne({username:req.params.username})
+
+    if(user&&user.status=="Online"){
+        if(user.invitations.length==0){
+            user.invitations.push(req.body.challenging)
+        }else{
+
+            for (let index = 0; index < user.invitations.length; index++) {
+                if(user.invitations[index]==req.body.challenging){
+                    res.json({
+                        message:`${req.params.username} ya ha sido retado`
+                    })
+                    return
+                }
+            }
+
+            user.invitations.push(req.body.challenging)    
+        }
+
+        user = await User.findOneAndUpdate({username:req.params.username},{invitations:user.invitations})
+            res.json({
+                data:user
+            })
+            return
+    }
+    res.json({
+        message:`No se pude retar a ${req.params.username} `
+    })
+    
+return 	
 });
 module.exports = router

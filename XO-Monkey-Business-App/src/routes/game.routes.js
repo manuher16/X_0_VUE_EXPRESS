@@ -20,11 +20,11 @@ router.get('/game/:id', (req, res) => {
 });
 
 router.post('/create/game', async (req, res) => {
-
+    console.log(req.body)
     const {error } = schemaCreateGame.validate(req.body)
 
     if (error) {
-        res.status(400).json({
+        res.json({
             error: "No se pudo crear la partida",
             description:error
         })
